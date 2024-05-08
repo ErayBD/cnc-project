@@ -1,0 +1,27 @@
+Flask==3.0.3
+SQLAlchemy
+matplotlib
+plotly
+psycopg2
+
+# ----- If Needed -----
+# numpy
+# mpld3
+# bcrypt
+# blinker
+# certifi
+# cffi
+# click
+# Flask-Bcrypt
+# Flask-Login
+# Flask-Mail
+# Flask-WTF
+# itsdangerous
+# Jinja2
+# MarkupSafe
+# Pillow
+# pycparser
+# six
+# SQLAlchemy
+# Werkzeug
+# WTForms
