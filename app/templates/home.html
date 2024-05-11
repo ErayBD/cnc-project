@@ -1,99 +1,103 @@
 {% extends 'layout.html' %}
 
-{% block content %}
-<!-- Section 1 -->
+{% block container %}
+<!-- section 1 -->
     <section class="py-2">
-        <div class="container-fluid px-lg-5">
-            <div class="row gx-lg-6">
-                <!-- Section 1 - Left Panel -->
+        <div class="container-fluid px-3 px-lg-5">
+            <div class="row">
+                <!-- left panel -->
                 <div class="col-md-3 p-3 pb-0">
-                    <div class="p-4 p-lg-5 bg-light rounded-3 shadow h-100">
+                    <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
                         <div class="pb-4">
                             <h4>Veri Kaynağı</h4><hr/>
                         </div>
                         <form action="/draw_graph" method="POST">
-                            <div class="m-0 m-lg-0">
-                                <label for="data-selection" class="mb-2">Veri Kaynağı Türü:</label>
-                                <select id="data-selection" class="form-select mb-4" onchange="s1_checkSelection(this.value)" name="data_selection">
-                                    <option value="SQL" {% if data_selection == "SQL" %}selected{% endif %}>SQL</option>
-                                    <option value="Excel" {% if data_selection == "Excel" %}selected{% endif %}>Excel</option>
-                                </select>
-                                <div id="s1_file-path" style="display: none;">
-                                    <label for="file-input" class="mb-2">Dosya Yolu:</label>
-                                    <input type="file" id="file-input" class="form-control mb-4" accept=".xls,.xlsx">
+                            <label for="s1_data_selection" class="mb-2">Veri Kaynağı Türü:</label>
+                            <select id="s1_data_selection" class="form-select mb-4" name="s1_data_selection">
+                                <option value="SQL" {% if data_selection == "SQL" %}selected{% endif %}>SQL</option>
+{#                              <option value="Excel" {% if data_selection == "Excel" %}selected{% endif %}>Excel</option>#}
+                            </select>
+{#                            <div id="s1_file-path" style="display: none;">#}
+{#                                <label for="file-input" class="mb-2">Dosya Yolu:</label>#}
+{#                                <input type="file" id="file-input" class="form-control mb-4" accept=".xls,.xlsx">#}
+{#                            </div>#}
+                            <div id="s1_dropdowns">
+                                <!-- row and column number selection -->
+                                <div class="d-flex justify-content-between mb-4">
+                                    <div class="me-2 flex-fill">
+                                        <label for="s1_row_selection" class="mb-2">Satır:</label>
+                                        <select id="s1_row_selection" class="form-select" name="s1_row_selection">
+                                            <option>Seçim Yapınız</option>
+                                            <option value="1" {% if s1_row_selection == "1" %}selected{% endif %}>1</option>
+                                            <option value="2" {% if s1_row_selection == "2" %}selected{% endif %}>2</option>
+                                            <option value="3" {% if s1_row_selection == "3" %}selected{% endif %}>3</option>
+                                            <option value="4" {% if s1_row_selection == "4" %}selected{% endif %}>4</option>
+                                        </select>
+                                    </div>
+                                    <div class="ms-2 flex-fill">
+                                        <label for="s1_column_selection" class="mb-2">Sütun:</label>
+                                        <select id="s1_column_selection" class="form-select" name="s1_column_selection">
+                                            <option>Seçim Yapınız</option>
+                                            <option value="1" {% if s1_column_selection == "1" %}selected{% endif %}>1</option>
+                                            <option value="2" {% if s1_column_selection == "2" %}selected{% endif %}>2</option>
+                                            <option value="3" {% if s1_column_selection == "3" %}selected{% endif %}>3</option>
+                                            <option value="4" {% if s1_column_selection == "4" %}selected{% endif %}>4</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div id="s1_dropdowns">
-                                    <div class="d-flex justify-content-between mb-4">
-                                        <div class="me-2 flex-fill">
-                                            <label for="row-selection" class="mb-2">Satır:</label>
-                                            <select id="row-selection" name="row_selection" class="form-select">
-                                                <option>Seçim Yapınız</option>
-                                                <option value="1" {% if row_selection == "1" %}selected{% endif %}>1</option>
-                                                <option value="2" {% if row_selection == "2" %}selected{% endif %}>2</option>
-                                                <option value="3" {% if row_selection == "3" %}selected{% endif %}>3</option>
-                                                <option value="4" {% if row_selection == "4" %}selected{% endif %}>4</option>
-                                            </select>
-                                        </div>
-                                        <div class="ms-2 flex-fill">
-                                            <label for="column-selection" class="mb-2">Sütun:</label>
-                                            <select id="column-selection" name="column_selection" class="form-select">
-                                                <option>Seçim Yapınız</option>
-                                                <option value="1" {% if column_selection == "1" %}selected{% endif %}>1</option>
-                                                <option value="2" {% if column_selection == "2" %}selected{% endif %}>2</option>
-                                                <option value="3" {% if column_selection == "3" %}selected{% endif %}>3</option>
-                                                <option value="4" {% if column_selection == "4" %}selected{% endif %}>4</option>
-                                            </select>
-                                        </div>
+                                <!-- X and Y axis selection -->
+                                <div class="mb-4">
+                                    <label for="s1_x_axis" class="mb-2">X Ekseni:</label>
+                                    <select id="s1_x_axis" class="form-select" name="s1_x_axis">
+                                        <option>Seçim Yapınız</option>
+                                        {% for column in s1_columns %}
+                                            <option value="{{ column }}" {% if s1_x_axis == column %}selected{% endif %}>{{ column }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="s1_y_axis" class="mb-2">Y Ekseni:</label>
+                                    <select id="s1_y_axis" class="form-select" name="s1_y_axis">
+                                        <option>Seçim Yapınız</option>
+                                        {% for column in s1_columns %}
+                                            <option value="{{ column }}" {% if s1_y_axis == column %}selected{% endif %}>{{ column }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <!-- error message -->
+                                {% if s1_error_message %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ s1_error_message }}
                                     </div>
-                                    <div class="form-group">
-                                        <label for="x-axis">X Ekseni:</label>
-                                        <select id="x-axis" name="x_axis" class="form-select mb-4">
-                                            <option>Seçim Yapınız</option>
-                                            {% for column in columns %}
-                                                <option value="{{ column }}" {% if x_axis == column %}selected{% endif %}>{{ column }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="y-axis">Y Ekseni:</label>
-                                        <select id="y-axis" name="y_axis" class="form-select mb-4">
-                                            <option>Seçim Yapınız</option>
-                                            {% for column in columns %}
-                                                <option value="{{ column }}" {% if y_axis == column %}selected{% endif %}>{{ column }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    {% if error_message %}
-                                        <div class="alert alert-danger" role="alert">
-                                            {{ error_message }}
-                                        </div>
-                                    {% endif %}
-                                    <div class="d-flex justify-content-center pt-2">
-                                        <button class="btn btn-outline-primary">Grafiği Göster</button>
-                                    </div>
+                                {% endif %}
+                                <!-- submit button -->
+                                <div class="d-flex justify-content-center pt-2">
+                                    <button class="btn btn-outline-primary" type="submit">Grafiği Göster</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-                <!-- Section 1 - Right Panel -->
+                <!-- right panel -->
                 <div class="col-md-9 p-3 pb-0">
-                    <div class="p-4 p-lg-5 bg-light rounded-3 shadow h-100">
-                        <div class="pb-4 d-flex justify-content-between">
+                    <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
+                        <div class="d-flex justify-content-between">
                             <h4>Grafik</h4>
-                            <form action="/reset_graphs" method="post">
-                                <button type="submit" class="btn btn-outline-danger btn-sm">Sıfırla</button>
+                            <!-- reset button -->
+                            <form action="/reset_graphs" method="POST">
+                                <button class="btn btn-outline-danger" type="submit">Sıfırla</button>
                             </form>
-                        </div>
-                        <hr/>
-                        {% if graphs %}
-                        <div class="m-0 m-lg-0" id="graph-grid" style="display: grid; grid-template-columns: repeat({{ column_selection|int }}, 1fr); grid-gap: 20px;">
-                            {% for graph in graphs %}
-                                <div class="graph-cell">
-                                    {{ graph|safe }}
-                                </div>
-                            {% endfor %}
-                        </div>
+                        </div><hr/>
+                        <!-- graphs -->
+                        {% if s1_graphs %}
+                            <div style="display: grid;
+                                    grid-template-columns: repeat({{ s1_column_selection|int }}, 1fr); grid-gap: 10px;">
+                                {% for graph in s1_graphs %}
+                                    <div class="graph-cell">
+                                        <iframe src="{{ url_for('static', filename=graph) }}" title="graph"></iframe>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         {% endif %}
                     </div>
                 </div>
@@ -101,32 +105,73 @@
         </div>
     </section>
 
-    <!-- Section 2 -->
+
+    <!-- section 2 -->
     <section class="py-4">
         <div class="container-fluid px-lg-5">
-            <div class="row gx-lg-6">
-                <!-- Section 2 - Main Panel -->
+            <div class="row">
+                <!-- main panel -->
                 <div class="col-md-12 p-3 pb-0">
-                    <div class="p-4 p-lg-5 bg-light rounded-3 shadow h-100">
+                    <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
                         <div class="pb-4">
-                            <h4>Train ve Test Dataset</h4><hr/>
+                            <h4>Anomaly Tablosu</h4><hr/>
                         </div>
-                        <!-- Section 2 - Tab Navigation -->
+                        <!-- table -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        {% for col in s2_anomaly_columns %}
+                                        <th>{{ col }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in s2_table_data %}
+                                    <tr>
+                                        {% for cell in row %}
+                                        <td>{{ cell }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- section 3 -->
+    <section class="py-4">
+        <div class="container-fluid px-lg-5">
+            <div class="row">
+                <!-- main panel -->
+                <div class="col-md-12 p-3 pb-0">
+                    <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
+                        <div class="pb-4">
+                            <h4>Train ve Test Veriseti</h4><hr/>
+                        </div>
+                        <!-- tab navigation -->
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="train-tab" data-bs-toggle="tab" data-bs-target="#train" type="button" role="tab" aria-controls="train" aria-selected="true">Train Dataset</button>
+                                <button class="nav-link active" id="train-tab" data-bs-toggle="tab"
+                                        data-bs-target="#train" type="button" role="tab" aria-controls="train"
+                                        aria-selected="true">Train Dataset</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="test-tab" data-bs-toggle="tab" data-bs-target="#test" type="button" role="tab" aria-controls="test" aria-selected="false">Test Dataset</button>
+                                <button class="nav-link" id="test-tab" data-bs-toggle="tab"
+                                        data-bs-target="#test" type="button" role="tab" aria-controls="test"
+                                        aria-selected="false">Test Dataset</button>
                             </li>
                         </ul>
-                        <!-- Section 2 - Tab Content -->
+                        <!-- tab content -->
                         <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade active" id="train" role="tabpanel" aria-labelledby="train-tab">
-                                {{ train_graph|safe }}
+                            <div class="tab-pane fade show active" id="train" role="tabpanel" aria-labelledby="train-tab">
                             </div>
-                            <div class="tab-pane fade active" id="test" role="tabpanel" aria-labelledby="test-tab">
-                                {{ test_graph|safe }}
+                            <div class="tab-pane fade" id="test" role="tabpanel" aria-labelledby="test-tab">
                             </div>
                         </div>
                     </div>
@@ -135,27 +180,29 @@
         </div>
     </section>
 
-    <!-- Section 3 -->
+
+    <!-- section 4 -->
     <section class="py-4">
         <div class="container-fluid px-lg-5">
-            <div class="row gx-lg-6">
-                <!-- Main Panel -->
+            <div class="row">
+                <!-- main panel -->
                 <div class="col-md-12 p-3 pb-0">
-                    <div class="p-4 p-lg-5 bg-light rounded-3 shadow h-100">
-                        <h4>Data Visualization</h4><hr/>
+                    <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
+                        <h4>Actual and Predicted Values</h4><hr/>
+                        <!-- checkboxes -->
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="actualDataCheckbox" value="actual">
+                            <input class="form-check-input" type="checkbox" id="actualDataCheckbox" name="dataChoice" value="actual">
                             <label class="form-check-label" for="actualDataCheckbox">Actual Data</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="predictedDataCheckbox" value="predicted">
+                            <input class="form-check-input" type="checkbox" id="predictedDataCheckbox" name="dataChoice" value="predicted">
                             <label class="form-check-label" for="predictedDataCheckbox">Predicted Data</label>
                         </div>
-                        <!-- Graph Container -->
+                        <!-- graph -->
                         <div id="graphContainer" style="width: 100%; height: 400px;"></div>
                     </div>
                 </div>
             </div>
         </div>
-</section>
-{% endblock content %}
+    </section>
+{% endblock container %}
