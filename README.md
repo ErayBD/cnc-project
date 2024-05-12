@@ -100,6 +100,15 @@ CREATE TABLE anomaly_table (
 #### 4. Import the .csv file in the static/data to the database
 * ```\copy table_name FROM 'data.csv' DELIMITER ',' CSV HEADER;```
 
+<br>
+
+### Run
+#### 1. Go to the project directory
+* ```cd anomaly-graph```
+
+#### 2. Run the project
+* ```python run.py```
+
 
 
 
