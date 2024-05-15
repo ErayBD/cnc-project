@@ -14,19 +14,22 @@
 #### 1. Clone the project
 * ```git clone https://github.com/eraybd/anomaly-graph.git```
 
-#### 3. Go to the project directory
+#### 2. Go to the project directory
 * ```cd anomaly-graph```
 
-#### 2. Install libraries
+#### 3. Install libraries
 * ```pip install -r requirements.txt```
 
 <br>
 
 ### Database Config
-#### 1. Modify config.py file
+#### 1. Modify 'config.py' file
 * ```SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:username@localhost/database'```
 
-#### 2. Create table on database
+#### 2. Connect to database
+* ```psql -U postgres -d database_name -h localhost```
+
+#### 3. Create table on database
 ```
 CREATE TABLE anomaly_table (
     index TIMESTAMP,
@@ -94,8 +97,6 @@ CREATE TABLE anomaly_table (
     spindle_alarm_data FLOAT
 );
 ```
-#### 3. Connect to database
-* ```psql -U postgres -d database_name -h localhost```
 
 #### 4. Import the .csv file in the static/data to the database
 * ```\copy table_name FROM 'data.csv' DELIMITER ',' CSV HEADER;```
