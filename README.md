@@ -1,5 +1,4 @@
-# Anomaly Graph
-
+# CNC Project
 
 ## Getting Started
 
