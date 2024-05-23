@@ -26,10 +26,10 @@
 #### 1. Modify 'config.py' file
 * ```SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:username@localhost/database'```
 
-#### 2. Connect to database
+#### 2. Connect to database via terminal
 * ```psql -U postgres -d database_name -h localhost```
 
-#### 3. Create table on database
+#### 3. Create table on database via SQL Query Tool
 ```
 CREATE TABLE anomaly_table (
     index TIMESTAMP,
@@ -98,7 +98,7 @@ CREATE TABLE anomaly_table (
 );
 ```
 
-#### 4. Import the .csv file in the static/data to the database
+#### 4. Import the .csv file in the static\data to the database
 * ```\copy table_name FROM 'data.csv' DELIMITER ',' CSV HEADER;```
 
 <br>
@@ -109,18 +109,3 @@ CREATE TABLE anomaly_table (
 
 #### 2. Run the project
 * ```python run.py```
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-
