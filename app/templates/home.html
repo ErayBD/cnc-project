@@ -1,26 +1,21 @@
 {% extends 'layout.html' %}
 
 {% block container %}
-<!-- section 1 -->
-    <section class="py-2">
+    <!-- section 1 -->
+    <section class="mt-2">
         <div class="container-fluid px-3 px-lg-5">
             <div class="row">
                 <!-- left panel -->
-                <div class="col-md-3 p-3 pb-0">
+                <div class="col-lg-2 col-md-4 p-3 pb-0">
                     <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
                         <div class="pb-4">
-                            <h4>Veri Kaynağı</h4><hr/>
+                            <h5>Veri Kaynağı</h5><hr/>
                         </div>
                         <form action="/draw_graph" method="POST">
                             <label for="s1_data_selection" class="mb-2">Veri Kaynağı Türü:</label>
                             <select id="s1_data_selection" class="form-select mb-4" name="s1_data_selection">
-                                <option value="SQL" {% if data_selection == "SQL" %}selected{% endif %}>SQL</option>
-{#                              <option value="Excel" {% if data_selection == "Excel" %}selected{% endif %}>Excel</option>#}
+                                <option value="SQL" {% if s1_data_selection == "SQL" %}selected{% endif %}>SQL</option>
                             </select>
-{#                            <div id="s1_file-path" style="display: none;">#}
-{#                                <label for="file-input" class="mb-2">Dosya Yolu:</label>#}
-{#                                <input type="file" id="file-input" class="form-control mb-4" accept=".xls,.xlsx">#}
-{#                            </div>#}
                             <div id="s1_dropdowns">
                                 <!-- row and column number selection -->
                                 <div class="d-flex justify-content-between mb-4">
@@ -64,6 +59,20 @@
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="mb-4">
+                                    <label for="s1_plot_type" class="mb-2">Çizim Türü:</label>
+                                    <select id="s1_plot_type" class="form-select" name="s1_plot_type">
+                                        <option>Seçim Yapınız</option>
+                                        <option value="scatter" {% if s1_plot_type == "scatter" %}selected{% endif %}>Scatter</option>
+                                        <option value="bar" {% if s1_plot_type == "bar" %}selected{% endif %}>Bar</option>
+                                        <option value="line" {% if s1_plot_type == "line" %}selected{% endif %}>Line</option>
+                                        <option value="histogram" {% if s1_plot_type == "histogram" %}selected{% endif %}>Histogram</option>
+                                    </select>
+                                </div>
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" id="s1_replace_graph" name="s1_replace_graph" {% if s1_replace_graph %}checked{% endif %}>
+                                    <label class="form-check-label" for="s1_replace_graph">Değiştir</label>
+                                </div>
                                 <!-- error message -->
                                 {% if s1_error_message %}
                                     <div class="alert alert-danger" role="alert">
@@ -79,19 +88,18 @@
                     </div>
                 </div>
                 <!-- right panel -->
-                <div class="col-md-9 p-3 pb-0">
+                <div class="col-lg-10 col-md-8 p-3 pb-0">
                     <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
                         <div class="d-flex justify-content-between">
-                            <h4>Grafik</h4>
+                            <h5>Grafik</h5>
                             <!-- reset button -->
                             <form action="/reset_graphs" method="POST">
-                                <button class="btn btn-outline-danger" type="submit">Sıfırla</button>
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Sıfırla</button>
                             </form>
                         </div><hr/>
                         <!-- graphs -->
                         {% if s1_graphs %}
-                            <div style="display: grid;
-                                    grid-template-columns: repeat({{ s1_column_selection|int }}, 1fr); grid-gap: 10px;">
+                            <div style="display: grid; grid-template-columns: repeat({{ s1_column_selection }}, 1fr); grid-gap: 10px;">
                                 {% for graph in s1_graphs %}
                                     <div class="graph-cell">
                                         <iframe src="{{ url_for('static', filename=graph) }}" title="graph"></iframe>
@@ -107,26 +115,26 @@
 
 
     <!-- section 2 -->
-    <section class="py-4">
+    <section class="mt-4">
         <div class="container-fluid px-lg-5">
             <div class="row">
                 <!-- main panel -->
-                <div class="col-md-12 p-3 pb-0">
+                <div class="col-lg-12 col-md-12 p-3 pb-0">
                     <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
                         <div class="pb-4">
-                            <h4>Anomaly Tablosu</h4><hr/>
+                            <h5>Anomaly Tablosu</h5><hr/>
                         </div>
                         <!-- table -->
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-striped">
-                                <thead>
+                                <thead class="sticky-table">
                                     <tr>
                                         {% for col in s2_anomaly_columns %}
-                                        <th>{{ col }}</th>
+                                        <th><button class="sortable btn btn-link" data-column="{{ loop.index0 }}">{{ col }}</button></th>
                                         {% endfor %}
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="table-body">
                                     {% for row in s2_table_data %}
                                     <tr>
                                         {% for cell in row %}
@@ -145,33 +153,112 @@
 
 
     <!-- section 3 -->
-    <section class="py-4">
+    <section class="mt-4">
         <div class="container-fluid px-lg-5">
             <div class="row">
-                <!-- main panel -->
-                <div class="col-md-12 p-3 pb-0">
+                <!-- left panel -->
+                <div class="col-lg-2 col-md-3 p-3 pb-0">
                     <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
                         <div class="pb-4">
-                            <h4>Train ve Test Veriseti</h4><hr/>
+                            <h5>Feature Seçimi</h5>
+                            <hr/>
                         </div>
+                        <div class="scrollable-checkboxes">
+                            <!-- train checkboxes -->
+                            <div id="train-checkboxes">
+                                {% for column in s3_columns_train %}
+                                <div class="form-check">
+                                    <input class="form-check-input s3_feature-checkbox" type="checkbox" value="{{ column }}"
+                                           id="train_{{ column }}">
+                                    <label class="form-check-label" for="train_{{ column }}">
+                                        {{ column }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <!-- test checkboxes -->
+                            <div id="test-checkboxes" style="display: none;">
+                                {% for column in s3_columns_test %}
+                                <div class="form-check">
+                                    <input class="form-check-input s3_feature-checkbox" type="checkbox" value="{{ column }}"
+                                           id="test_{{ column }}">
+                                    <label class="form-check-label" for="test_{{ column }}">
+                                        {{ column }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- right panel -->
+                <div class="col-lg-10 col-md-9 p-3 pb-0">
+                    <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
+                        <div class="d-flex justify-content-between">
+                            <h5>63 Feature için Test ve Train Veriseti</h5>
+                            <!-- draw type menu -->
+                            <div class="justify-content-end">
+                                <div class="btn-group">
+                                    <button id="selected-plot-type-button" class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Scatter
+                                    </button>
+                                    <ul class="dropdown-menu plot-type-dropdown-menu">
+                                        <li><button class="dropdown-item" type="button" data-plot-type="scatter">Scatter</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type="bar">Bar</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type="line">Line</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type="histogram">Histogram</button></li>
+                                    </ul>
+                                </div>
+                                <!-- months dropdown menu -->
+                                <div class="btn-group">
+                                    <button id="selected-month-button" class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Tüm Aylar
+                                    </button>
+                                    <ul class="dropdown-menu month-dropdown-menu">
+                                        <li><button class="dropdown-item" type="button" data-month="all">Tüm Aylar</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="01">Ocak</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="02">Şubat</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="03">Mart</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="04">Nisan</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="05">Mayıs</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="06">Haziran</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="07">Temmuz</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="08">Ağustos</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="09">Eylül</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="10">Ekim</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="11">Kasım</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="12">Aralık</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
                         <!-- tab navigation -->
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="train-tab" data-bs-toggle="tab"
-                                        data-bs-target="#train" type="button" role="tab" aria-controls="train"
-                                        aria-selected="true">Train Dataset</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="test-tab" data-bs-toggle="tab"
-                                        data-bs-target="#test" type="button" role="tab" aria-controls="test"
-                                        aria-selected="false">Test Dataset</button>
-                            </li>
-                        </ul>
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="train-tab" type="button"
+                                            role="tab" data-bs-toggle="tab" data-bs-target="#train"
+                                            aria-controls="train" aria-selected="true">Train Dataset</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="test-tab" type="button"
+                                            role="tab" data-bs-toggle="tab" data-bs-target="#test"
+                                            aria-controls="test" aria-selected="false">Test Dataset</button>
+                                </li>
+                            </ul>
+                        </div>
                         <!-- tab content -->
-                        <div class="tab-content" id="myTabContent">
+                        <div class="tab-content border border-secondary-subtle">
                             <div class="tab-pane fade show active" id="train" role="tabpanel" aria-labelledby="train-tab">
+                                <!-- train graph -->
+                                <div id="train-graph" class="tab-pane-inside"></div>
                             </div>
                             <div class="tab-pane fade" id="test" role="tabpanel" aria-labelledby="test-tab">
+                                <!-- test graph -->
+                                <div id="test-graph" class="tab-pane-inside"></div>
                             </div>
                         </div>
                     </div>
@@ -182,27 +269,117 @@
 
 
     <!-- section 4 -->
-    <section class="py-4">
+    <section class="mt-4">
         <div class="container-fluid px-lg-5">
             <div class="row">
-                <!-- main panel -->
-                <div class="col-md-12 p-3 pb-0">
+                <!-- left panel -->
+                <div class="col-lg-2 col-md-3 p-3 pb-0">
                     <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
-                        <h4>Actual and Predicted Values</h4><hr/>
-                        <!-- checkboxes -->
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="actualDataCheckbox" name="dataChoice" value="actual">
-                            <label class="form-check-label" for="actualDataCheckbox">Actual Data</label>
+                        <div class="pb-4">
+                            <h5>Feature Seçimi</h5>
+                            <hr/>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="predictedDataCheckbox" name="dataChoice" value="predicted">
-                            <label class="form-check-label" for="predictedDataCheckbox">Predicted Data</label>
+                        <div class="scrollable-checkboxes">
+                            <!-- train checkboxes -->
+                            <div id="train-checkboxes-section4">
+                                {% for column in s4_columns_train %}
+                                <div class="form-check">
+                                    <input class="form-check-input s4_feature-checkbox" type="checkbox" value="{{ column }}"
+                                           id="train_section4_{{ column }}">
+                                    <label class="form-check-label" for="train_section4_{{ column }}">
+                                        {{ column }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <!-- test checkboxes -->
+                            <div id="test-checkboxes-section4" style="display: none;">
+                                {% for column in s4_columns_test %}
+                                <div class="form-check">
+                                    <input class="form-check-input s4_feature-checkbox" type="checkbox" value="{{ column }}"
+                                           id="test_section4_{{ column }}">
+                                    <label class="form-check-label" for="test_section4_{{ column }}">
+                                        {{ column }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
                         </div>
-                        <!-- graph -->
-                        <div id="graphContainer" style="width: 100%; height: 400px;"></div>
+                    </div>
+                </div>
+                <!-- right panel -->
+                <div class="col-lg-10 col-md-9 p-3 pb-0">
+                    <div class="p-4 p-lg-5 bg-light rounded-4 shadow h-100">
+                        <div class="d-flex justify-content-between">
+                            <h5>Actual ve Prediction Değerleri</h5>
+                            <!-- draw type menu -->
+                            <div class="justify-content-end">
+                                <div class="btn-group">
+                                    <button id="selected-plot-type-button-section4" class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Scatter
+                                    </button>
+                                    <ul class="dropdown-menu plot-type-dropdown-menu-section4">
+                                        <li><button class="dropdown-item" type="button" data-plot-type="scatter">Scatter</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type="bar">Bar</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type="line">Line</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type="histogram">Histogram</button></li>
+                                    </ul>
+                                </div>
+                                <!-- months dropdown menu -->
+                                <div class="btn-group">
+                                    <button id="selected-month-button-section4" class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Tüm Aylar
+                                    </button>
+                                    <ul class="dropdown-menu month-dropdown-menu-section4">
+                                        <li><button class="dropdown-item" type="button" data-month="all">Tüm Aylar</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="01">Ocak</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="02">Şubat</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="03">Mart</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="04">Nisan</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="05">Mayıs</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="06">Haziran</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="07">Temmuz</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="08">Ağustos</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="09">Eylül</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="10">Ekim</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="11">Kasım</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month="12">Aralık</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div><hr/>
+                        <!-- tab navigation -->
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="train-tab-section4" type="button"
+                                            role="tab" data-bs-toggle="tab" data-bs-target="#train-section4"
+                                            aria-controls="train-section4" aria-selected="true">Train Dataset</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="test-tab-section4" type="button"
+                                            role="tab" data-bs-toggle="tab" data-bs-target="#test-section4"
+                                            aria-controls="test-section4" aria-selected="false">Test Dataset</button>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- tab content -->
+                        <div class="tab-content border border-secondary-subtle">
+                            <div class="tab-pane fade show active" id="train-section4" role="tabpanel" aria-labelledby="train-tab-section4">
+                                <!-- train graph -->
+                                <div id="train-graph-section4" class="tab-pane-inside"></div>
+                            </div>
+                            <div class="tab-pane fade" id="test-section4" role="tabpanel" aria-labelledby="test-tab-section4">
+                                <!-- test graph -->
+                                <div id="test-graph-section4" class="tab-pane-inside"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 {% endblock container %}

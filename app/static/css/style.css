@@ -6,7 +6,7 @@ body {
     height: 80px;
 }
 
-/* section 1, graph */
+/* section 1 */
 .graph-cell {
     width: 100%;
     height: 500px;
@@ -17,17 +17,28 @@ body {
     border: none;
 }
 
-/* section 2, table */
+
+/* section 2 */
+.sticky-table {
+    position: sticky;
+    top: 0;
+}
 .table-responsive {
+    max-height: 500px;
     overflow-x: auto;
     overflow-y: auto;
-    height: 400px;
 }
 .table thead th {
     background-color: #3079c0;
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
+    text-align: center;
+}
+.table th .btn {
+    color: #ffffff;
+    text-decoration: none;
+}
+.table th .btn:hover {
+    color: #d1e8ff;
+    border: solid 1px;
 }
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: rgba(0,0,0,.05);
@@ -41,6 +52,44 @@ body {
 .table td:first-child, .table th:first-child {
     min-width: 200px;
 }
+
+
+/* section 3 */
+.scrollable-checkboxes {
+    overflow-y: auto;
+    max-height: 700px;
+}
+.scrollable-checkboxes .form-check {
+    margin-bottom: 10px;
+    margin-left: 3px;
+}
+.scrollable-checkboxes .form-check-input {
+    margin-right: 8px;
+}
+.nav-tabs .nav-link {
+    border-top: solid 1px;
+    border-right: solid 1px;
+    border-left: solid 1px;
+    border-bottom: none;
+    background-color: #f8f9fa;
+    color: #495057;
+    transition: background-color 0.3s, color 0.3s;
+}
+.nav-tabs .nav-link:hover {
+    background-color: #a4b3bd;
+    color: #ffffff;
+}
+.nav-tabs .nav-link.active {
+    background-color: #007bff;
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(50,50,93,0.11), 0 1px 3px rgba(0,0,0,0.08);
+}
+.tab-pane-inside {
+    height: 700px;
+}
+
+/* section 4 */
+
 
 
 
