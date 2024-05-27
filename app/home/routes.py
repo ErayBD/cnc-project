@@ -242,17 +242,7 @@ def get_feature_data():
     return jsonify({'x': x_data, 'y': y_data})
 
 
-# section 4, deprecated
-@main.route("/get_graph_data", methods=['GET'])
-def get_graph_data():
-    feature = request.args.get('feature')
-    actual_table = 'anomaly_table_actual'
-    prediction_table = 'anomaly_table_prediction'
-    x_data, y_actual = s3_fetch_feature_data('index', feature, actual_table)
-    _, y_prediction = s3_fetch_feature_data('index', feature, prediction_table)
-    return jsonify({'x': x_data, 'y_actual': y_actual, 'y_prediction': y_prediction})
-
-# section 4, new
+# section 4, xxx
 @main.route("/get_feature_data_section4", methods=['GET'])
 def get_feature_data_section4():
     feature = request.args.get('feature')
@@ -262,5 +252,4 @@ def get_feature_data_section4():
     prediction_table_name = 'prediction_table_train' if tab == "train" else 'prediction_table_test'
     x_data, y_actual = s3_fetch_feature_data('index', feature, actual_table_name, month)
     _, y_prediction = s3_fetch_feature_data('index', feature, prediction_table_name, month)
-
     return jsonify({'x': x_data, 'y_actual': y_actual, 'y_prediction': y_prediction})

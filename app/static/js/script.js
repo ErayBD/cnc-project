@@ -66,17 +66,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     initializeGraph(trainGraph);
     initializeGraph(testGraph);
-
-    const trainTab = document.getElementById('train-tab');
-    const testTab = document.getElementById('test-tab');
+    
+    const trainTab = document.getElementById('train-tab-section3');
+    const testTab = document.getElementById('test-tab-section3');
 
     let trainSelections = {};
     let testSelections = {};
     let selectedMonth = 'all';
     let activeTab = 'train';
     let selectedPlotType = 'scatter';
-
-
 
 
     function saveSelections() {
@@ -99,100 +97,87 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateGraph() {
-        const checkboxes = activeTab === 'train' ? trainCheckboxes.querySelectorAll('.s3_feature-checkbox') : testCheckboxes.querySelectorAll('.s3_feature-checkbox');
-        const selectedFeatures = Array.from(checkboxes)
-            .filter(checkbox => checkbox.checked)
-            .map(checkbox => checkbox.value);
+    const checkboxes = activeTab === 'train' ? trainCheckboxes.querySelectorAll('.s3_feature-checkbox') : testCheckboxes.querySelectorAll('.s3_feature-checkbox');
+    const selectedFeatures = Array.from(checkboxes)
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => checkbox.value);
 
-        const traces = [];
-        const promises = selectedFeatures.map((feature, index) => {
-            return fetch(`/get_feature_data?feature=${feature}&tab=${activeTab}&month=${selectedMonth}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(`Data for feature: ${feature}`, data);  // Debugging output
+    const traces = [];
+    const promises = selectedFeatures.map((feature, index) => {
+        return fetch(`/get_feature_data?feature=${feature}&tab=${activeTab}&month=${selectedMonth}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(`Data for feature: ${feature}`, data);  // Debugging output
 
-                    if (selectedPlotType === 'histogram') {
-                        traces.push({
-                            x: data.y_actual,
-                            type: selectedPlotType,
-                            name: `${feature} - Actual`,
-                        });
-                        traces.push({
-                            x: data.y_prediction,
-                            type: selectedPlotType,
-                            name: `${feature} - Prediction`,
-                        });
-                    } else {
-                        traces.push({
-                            x: data.x,
-                            y: data.y_actual,
-                            type: selectedPlotType,
-                            mode: selectedPlotType === 'scatter' ? 'lines+markers' : '',
-                            name: `${feature} - Actual`,
-                            marker: { size: 10},
-                            line: { width: 3}
-                        });
-                        traces.push({
-                            x: data.x,
-                            y: data.y_prediction,
-                            type: selectedPlotType,
-                            mode: selectedPlotType === 'scatter' ? 'lines+markers' : '',
-                            name: `${feature} - Prediction`,
-                            marker: { size: 10},
-                            line: { width: 3}
-                        });
-                    }
-                    return data.x;
-                })
-                .catch(error => {
-                    console.error('Error fetching feature data:', error);
-                });
-        });
-
-        Promise.all(promises).then((xValues) => {
-            if (xValues.length > 0) {
-                const xTicks = xValues[0].filter((_, i) => i % Math.ceil(xValues[0].length / 20) === 0);
-                const xTickText = xTicks.map(x => {
-                    const date = new Date(x);
-                    const hours = date.getHours()
-                    const minutes = date.getMinutes()
-                    const seconds = date.getSeconds()
-                    return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()} ${date.getFullYear()}, ${hours}:${minutes}:${seconds}`;
-                });
-
-                if (activeTab === 'train') {
-                    Plotly.newPlot(trainGraph, traces, {
-                        title: 'Train Dataset',
-                        xaxis: {
-                            tickvals: xTicks,
-                            ticktext: xTickText,
-                        },
-                        yaxis: {}
+                if (selectedPlotType === 'histogram') {
+                    traces.push({
+                        x: data.y,
+                        type: selectedPlotType,
+                        name: `${feature} - Actual`,
                     });
-                } else if (activeTab === 'test') {
-                    Plotly.newPlot(testGraph, traces, {
-                        title: 'Test Dataset',
-                        xaxis: {
-                            tickvals: xTicks,
-                            ticktext: xTickText,
-                        },
-                        yaxis: {},
+                } else {
+                    traces.push({
+                        x: data.x,
+                        y: data.y,
+                        type: selectedPlotType,
+                        mode: selectedPlotType === 'scatter' ? 'lines+markers' : '',
+                        name: `${feature} - Actual`,
+                        marker: { size: 10},
+                        line: { width: 3}
                     });
                 }
-            } else {
-                if (activeTab === 'train') {
-                    Plotly.newPlot(trainGraph, [], { title: 'Train Dataset', xaxis: {}, yaxis: {} });
-                } else if (activeTab === 'test') {
-                    Plotly.newPlot(testGraph, [], { title: 'Test Dataset', xaxis: {}, yaxis: {} });
-                }
+                return data.x;
+            })
+            .catch(error => {
+                console.error('Error fetching feature data:', error);
+            });
+    });
+
+    Promise.all(promises).then((xValues) => {
+        if (xValues.length > 0) {
+            const xTicks = xValues[0].filter((_, i) => i % Math.ceil(xValues[0].length / 20) === 0);
+            const xTickText = xTicks.map(x => {
+                const date = new Date(x);
+                const hours = date.getHours()
+                const minutes = date.getMinutes()
+                const seconds = date.getSeconds()
+                return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()} ${date.getFullYear()}, ${hours}:${minutes}:${seconds}`;
+            });
+
+            if (activeTab === 'train') {
+                Plotly.newPlot(trainGraph, traces, {
+                    title: 'Train Dataset',
+                    xaxis: {
+                        tickvals: xTicks,
+                        ticktext: xTickText,
+                    },
+                    yaxis: {}
+                });
+            } else if (activeTab === 'test') {
+                Plotly.newPlot(testGraph, traces, {
+                    title: 'Test Dataset',
+                    xaxis: {
+                        tickvals: xTicks,
+                        ticktext: xTickText,
+                    },
+                    yaxis: {},
+                });
             }
-        });
-    }
+        } else {
+            if (activeTab === 'train') {
+                Plotly.newPlot(trainGraph, [], { title: 'Train Dataset', xaxis: {}, yaxis: {} });
+            } else if (activeTab === 'test') {
+                Plotly.newPlot(testGraph, [], { title: 'Test Dataset', xaxis: {}, yaxis: {} });
+            }
+        }
+    });
+}
+
 
 
     const allCheckboxes = document.querySelectorAll('.s3_feature-checkbox');
