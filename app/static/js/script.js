@@ -112,23 +112,57 @@ document.addEventListener('DOMContentLoaded', function () {
                     return response.json();
                 })
                 .then(data => {
-                    if (selectedPlotTypeSection3 === 'histogram') {
-                        traces.push({
-                            x: data.y,
-                            type: selectedPlotTypeSection3,
-                            name: `index - ${feature}`,
-                        });
-                    } else {
-                        traces.push({
+                    let trace = {};
+                    if (selectedPlotTypeSection3 === 'scatter') {
+                        trace = {
                             x: data.x,
                             y: data.y,
-                            type: selectedPlotTypeSection3,
-                            mode: selectedPlotTypeSection3 === 'scatter' ? 'lines+markers' : '',
+                            type: 'scatter',
+                            mode: 'lines+markers',
                             name: `index - ${feature}`,
-                            marker: { size: 10},
-                            line: { width: 3}
-                        });
+                            marker: {
+                                size: 5,
+                                color: 'rgb(31, 119, 180)'
+                            },
+                            line: {
+                                width: 3,
+                                color: 'rgb(255, 127, 14)'
+                            }
+                        };
+                    } else if (selectedPlotTypeSection3 === 'histogram') {
+                        trace = {
+                            x: data.y,
+                            type: 'histogram',
+                            name: `index - ${feature}`,
+                            marker: {
+                                size: 3,
+                                color: 'rgb(31, 119, 180)'
+                            },
+                        };
+                    } else if (selectedPlotTypeSection3 === 'bar') {
+                        trace = {
+                            x: data.x,
+                            y: data.y,
+                            type: 'bar',
+                            name: `index - ${feature}`,
+                            marker: {
+                                color: 'rgb(31, 119, 180)'
+                            }
+                        };
+                    } else if (selectedPlotTypeSection3 === 'line') {
+                        trace = {
+                            x: data.x,
+                            y: data.y,
+                            type: 'scatter',
+                            mode: 'lines',
+                            name: `index - ${feature}`,
+                            line: {
+                                width: 3,
+                                color: 'rgb(31, 119, 180)'
+                            }
+                        };
                     }
+                    traces.push(trace);
                     return data.x;
                 })
                 .catch(error => {
