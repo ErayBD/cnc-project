@@ -165,24 +165,24 @@
                         </div>
                         <div class="scrollable-checkboxes">
                             <!-- train checkboxes -->
-                            <div id="train-checkboxes">
+                            <div id="train-checkboxes-section3">
                                 {% for column in s3_columns_train %}
                                 <div class="form-check">
-                                    <input class="form-check-input s3_feature-checkbox" type="checkbox" value="{{ column }}"
-                                           id="train_{{ column }}">
-                                    <label class="form-check-label" for="train_{{ column }}">
+                                    <input class="form-check-input s3_feature_checkbox" type="checkbox" value="{{ column }}"
+                                           id="train_section3_{{ column }}">
+                                    <label class="form-check-label" for="train_section3_{{ column }}">
                                         {{ column }}
                                     </label>
                                 </div>
                                 {% endfor %}
                             </div>
                             <!-- test checkboxes -->
-                            <div id="test-checkboxes" style="display: none;">
+                            <div id="test-checkboxes-section3" style="display: none;">
                                 {% for column in s3_columns_test %}
                                 <div class="form-check">
-                                    <input class="form-check-input s3_feature-checkbox" type="checkbox" value="{{ column }}"
-                                           id="test_{{ column }}">
-                                    <label class="form-check-label" for="test_{{ column }}">
+                                    <input class="form-check-input s3_feature_checkbox" type="checkbox" value="{{ column }}"
+                                           id="test_section3_{{ column }}">
+                                    <label class="form-check-label" for="test_section3_{{ column }}">
                                         {{ column }}
                                     </label>
                                 </div>
@@ -199,37 +199,37 @@
                             <!-- draw type menu -->
                             <div class="justify-content-end">
                                 <div class="btn-group">
-                                    <button id="selected-plot-type-button" class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                    <button id="selected-plot-type-button-section3" class="btn btn-sm btn-outline-primary dropdown-toggle"
                                             type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Scatter
                                     </button>
-                                    <ul class="dropdown-menu plot-type-dropdown-menu">
-                                        <li><button class="dropdown-item" type="button" data-plot-type="scatter">Scatter</button></li>
-                                        <li><button class="dropdown-item" type="button" data-plot-type="bar">Bar</button></li>
-                                        <li><button class="dropdown-item" type="button" data-plot-type="line">Line</button></li>
-                                        <li><button class="dropdown-item" type="button" data-plot-type="histogram">Histogram</button></li>
+                                    <ul class="dropdown-menu plot-type-dropdown-menu-section3">
+                                        <li><button class="dropdown-item" type="button" data-plot-type-section3="scatter">Scatter</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type-section3="bar">Bar</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type-section3="line">Line</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type-section3="histogram">Histogram</button></li>
                                     </ul>
                                 </div>
                                 <!-- months dropdown menu -->
                                 <div class="btn-group">
-                                    <button id="selected-month-button" class="btn btn-sm btn-outline-primary dropdown-toggle"
+                                    <button id="selected-month-button-section3" class="btn btn-sm btn-outline-primary dropdown-toggle"
                                             type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Tüm Aylar
                                     </button>
-                                    <ul class="dropdown-menu month-dropdown-menu">
-                                        <li><button class="dropdown-item" type="button" data-month="all">Tüm Aylar</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="01">Ocak</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="02">Şubat</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="03">Mart</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="04">Nisan</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="05">Mayıs</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="06">Haziran</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="07">Temmuz</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="08">Ağustos</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="09">Eylül</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="10">Ekim</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="11">Kasım</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="12">Aralık</button></li>
+                                    <ul class="dropdown-menu month-dropdown-menu-section3">
+                                        <li><button class="dropdown-item" type="button" data-month-section3="all">Tüm Aylar</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="01">Ocak</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="02">Şubat</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="03">Mart</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="04">Nisan</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="05">Mayıs</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="06">Haziran</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="07">Temmuz</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="08">Ağustos</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="09">Eylül</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="10">Ekim</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="11">Kasım</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section3="12">Aralık</button></li>
                                     </ul>
                                 </div>
                             </div>
@@ -240,25 +240,25 @@
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="train-tab-section3" type="button"
-                                            role="tab" data-bs-toggle="tab" data-bs-target="#train"
-                                            aria-controls="train" aria-selected="true">Train Dataset</button>
+                                            role="tab" data-bs-toggle="tab" data-bs-target="#train-section3"
+                                            aria-controls="train-section3" aria-selected="true">Train Dataset</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="test-tab-section3" type="button"
-                                            role="tab" data-bs-toggle="tab" data-bs-target="#test"
-                                            aria-controls="test" aria-selected="false">Test Dataset</button>
+                                            role="tab" data-bs-toggle="tab" data-bs-target="#test-section3"
+                                            aria-controls="test-section3" aria-selected="false">Test Dataset</button>
                                 </li>
                             </ul>
                         </div>
                         <!-- tab content -->
                         <div class="tab-content border border-secondary-subtle">
-                            <div class="tab-pane fade show active" id="train" role="tabpanel" aria-labelledby="train-tab">
+                            <div class="tab-pane fade show active" id="train-section3" role="tabpanel" aria-labelledby="train-tab-section3">
                                 <!-- train graph -->
-                                <div id="train-graph" class="tab-pane-inside"></div>
+                                <div id="train-graph-section3" class="tab-pane-inside"></div>
                             </div>
-                            <div class="tab-pane fade" id="test" role="tabpanel" aria-labelledby="test-tab">
+                            <div class="tab-pane fade" id="test-section3" role="tabpanel" aria-labelledby="test-tab-section3">
                                 <!-- test graph -->
-                                <div id="test-graph" class="tab-pane-inside"></div>
+                                <div id="test-graph-section3" class="tab-pane-inside"></div>
                             </div>
                         </div>
                     </div>
@@ -284,7 +284,7 @@
                             <div id="train-checkboxes-section4">
                                 {% for column in s4_columns_train %}
                                 <div class="form-check">
-                                    <input class="form-check-input s4_feature-checkbox" type="checkbox" value="{{ column }}"
+                                    <input class="form-check-input s4_feature_checkbox" type="checkbox" value="{{ column }}"
                                            id="train_section4_{{ column }}">
                                     <label class="form-check-label" for="train_section4_{{ column }}">
                                         {{ column }}
@@ -296,7 +296,7 @@
                             <div id="test-checkboxes-section4" style="display: none;">
                                 {% for column in s4_columns_test %}
                                 <div class="form-check">
-                                    <input class="form-check-input s4_feature-checkbox" type="checkbox" value="{{ column }}"
+                                    <input class="form-check-input s4_feature_checkbox" type="checkbox" value="{{ column }}"
                                            id="test_section4_{{ column }}">
                                     <label class="form-check-label" for="test_section4_{{ column }}">
                                         {{ column }}
@@ -320,10 +320,10 @@
                                         Scatter
                                     </button>
                                     <ul class="dropdown-menu plot-type-dropdown-menu-section4">
-                                        <li><button class="dropdown-item" type="button" data-plot-type="scatter">Scatter</button></li>
-                                        <li><button class="dropdown-item" type="button" data-plot-type="bar">Bar</button></li>
-                                        <li><button class="dropdown-item" type="button" data-plot-type="line">Line</button></li>
-                                        <li><button class="dropdown-item" type="button" data-plot-type="histogram">Histogram</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type-section4="scatter">Scatter</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type-section4="bar">Bar</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type-section4="line">Line</button></li>
+                                        <li><button class="dropdown-item" type="button" data-plot-type-section4="histogram">Histogram</button></li>
                                     </ul>
                                 </div>
                                 <!-- months dropdown menu -->
@@ -333,19 +333,19 @@
                                         Tüm Aylar
                                     </button>
                                     <ul class="dropdown-menu month-dropdown-menu-section4">
-                                        <li><button class="dropdown-item" type="button" data-month="all">Tüm Aylar</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="01">Ocak</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="02">Şubat</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="03">Mart</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="04">Nisan</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="05">Mayıs</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="06">Haziran</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="07">Temmuz</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="08">Ağustos</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="09">Eylül</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="10">Ekim</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="11">Kasım</button></li>
-                                        <li><button class="dropdown-item" type="button" data-month="12">Aralık</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="all">Tüm Aylar</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="01">Ocak</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="02">Şubat</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="03">Mart</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="04">Nisan</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="05">Mayıs</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="06">Haziran</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="07">Temmuz</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="08">Ağustos</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="09">Eylül</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="10">Ekim</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="11">Kasım</button></li>
+                                        <li><button class="dropdown-item" type="button" data-month-section4="12">Aralık</button></li>
                                     </ul>
                                 </div>
                             </div>

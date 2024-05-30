@@ -47,16 +47,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // section 3
 document.addEventListener('DOMContentLoaded', function () {
-    const trainGraph = document.getElementById('train-graph');
-    const testGraph = document.getElementById('test-graph');
-    const monthDropdown = document.querySelector('.month-dropdown-menu');
-    const selectedMonthButton = document.getElementById('selected-month-button');
-    const plotTypeDropdown = document.querySelector('.plot-type-dropdown-menu');
-    const selectedPlotTypeButton = document.getElementById('selected-plot-type-button');
-    const trainCheckboxes = document.getElementById('train-checkboxes');
-    const testCheckboxes = document.getElementById('test-checkboxes');
+    const trainGraph = document.getElementById('train-graph-section3');
+    const testGraph = document.getElementById('test-graph-section3');
+    const monthDropdown = document.querySelector('.month-dropdown-menu-section3');
+    const selectedMonthButton = document.getElementById('selected-month-button-section3');
+    const plotTypeDropdown = document.querySelector('.plot-type-dropdown-menu-section3');
+    const selectedPlotTypeButton = document.getElementById('selected-plot-type-button-section3');
+    const trainCheckboxes = document.getElementById('train-checkboxes-section3');
+    const testCheckboxes = document.getElementById('test-checkboxes-section3');
 
-    function initializeGraph(element) {
+    function initializeGraphSection3(element) {
         Plotly.newPlot(element, [], {
             title: 'Feature Data',
             xaxis: {},
@@ -64,164 +64,159 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    initializeGraph(trainGraph);
-    initializeGraph(testGraph);
-    
-    const trainTab = document.getElementById('train-tab-section3');
-    const testTab = document.getElementById('test-tab-section3');
+    initializeGraphSection3(trainGraph);
+    initializeGraphSection3(testGraph);
 
-    let trainSelections = {};
-    let testSelections = {};
-    let selectedMonth = 'all';
-    let activeTab = 'train';
-    let selectedPlotType = 'scatter';
+    const trainTabSection3 = document.getElementById('train-tab-section3');
+    const testTabSection3 = document.getElementById('test-tab-section3');
+
+    let trainSelectionsSection3 = {};
+    let testSelectionsSection3 = {};
+    let selectedMonthSection3 = 'all';
+    let activeTabSection3 = 'train';
+    let selectedPlotTypeSection3 = 'scatter';
 
 
-    function saveSelections() {
-        const checkboxes = activeTab === 'train' ? trainCheckboxes.querySelectorAll('.s3_feature-checkbox') : testCheckboxes.querySelectorAll('.s3_feature-checkbox');
+    function saveSelectionsSection3() {
+        const checkboxes = activeTabSection3 === 'train' ? trainCheckboxes.querySelectorAll('.s3_feature_checkbox') : testCheckboxes.querySelectorAll('.s3_feature_checkbox');
         checkboxes.forEach(checkbox => {
-            if (activeTab === 'train') {
-                trainSelections[checkbox.value] = checkbox.checked;
-            } else if (activeTab === 'test') {
-                testSelections[checkbox.value] = checkbox.checked;
+            if (activeTabSection3 === 'train') {
+                trainSelectionsSection3[checkbox.value] = checkbox.checked;
+            } else if (activeTabSection3 === 'test') {
+                testSelectionsSection3[checkbox.value] = checkbox.checked;
             }
         });
     }
 
-    function loadSelections(selections) {
-        const checkboxes = activeTab === 'train' ? trainCheckboxes.querySelectorAll('.s3_feature-checkbox') : testCheckboxes.querySelectorAll('.s3_feature-checkbox');
+    function loadSelectionsSection3(selections) {
+        const checkboxes = activeTabSection3 === 'train' ? trainCheckboxes.querySelectorAll('.s3_feature_checkbox') : testCheckboxes.querySelectorAll('.s3_feature_checkbox');
         checkboxes.forEach(checkbox => {
             checkbox.checked = selections[checkbox.value] || false;
         });
-        updateGraph();
+        updateGraphSection3();
     }
 
-    function updateGraph() {
-    const checkboxes = activeTab === 'train' ? trainCheckboxes.querySelectorAll('.s3_feature-checkbox') : testCheckboxes.querySelectorAll('.s3_feature-checkbox');
-    const selectedFeatures = Array.from(checkboxes)
-        .filter(checkbox => checkbox.checked)
-        .map(checkbox => checkbox.value);
+    function updateGraphSection3() {
+        const checkboxes = activeTabSection3 === 'train' ? trainCheckboxes.querySelectorAll('.s3_feature_checkbox') : testCheckboxes.querySelectorAll('.s3_feature_checkbox');
+        const selectedFeatures = Array.from(checkboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
 
-    const traces = [];
-    const promises = selectedFeatures.map((feature, index) => {
-        return fetch(`/get_feature_data?feature=${feature}&tab=${activeTab}&month=${selectedMonth}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(`Data for feature: ${feature}`, data);  // Debugging output
-
-                if (selectedPlotType === 'histogram') {
-                    traces.push({
-                        x: data.y,
-                        type: selectedPlotType,
-                        name: `${feature} - Actual`,
-                    });
-                } else {
-                    traces.push({
-                        x: data.x,
-                        y: data.y,
-                        type: selectedPlotType,
-                        mode: selectedPlotType === 'scatter' ? 'lines+markers' : '',
-                        name: `${feature} - Actual`,
-                        marker: { size: 10},
-                        line: { width: 3}
-                    });
-                }
-                return data.x;
-            })
-            .catch(error => {
-                console.error('Error fetching feature data:', error);
-            });
-    });
-
-    Promise.all(promises).then((xValues) => {
-        if (xValues.length > 0) {
-            const xTicks = xValues[0].filter((_, i) => i % Math.ceil(xValues[0].length / 20) === 0);
-            const xTickText = xTicks.map(x => {
-                const date = new Date(x);
-                const hours = date.getHours()
-                const minutes = date.getMinutes()
-                const seconds = date.getSeconds()
-                return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()} ${date.getFullYear()}, ${hours}:${minutes}:${seconds}`;
-            });
-
-            if (activeTab === 'train') {
-                Plotly.newPlot(trainGraph, traces, {
-                    title: 'Train Dataset',
-                    xaxis: {
-                        tickvals: xTicks,
-                        ticktext: xTickText,
-                    },
-                    yaxis: {}
+        const traces = [];
+        const promises = selectedFeatures.map((feature, index) => {
+            return fetch(`/get_feature_data?feature=${feature}&tab=${activeTabSection3}&month=${selectedMonthSection3}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (selectedPlotTypeSection3 === 'histogram') {
+                        traces.push({
+                            x: data.y,
+                            type: selectedPlotTypeSection3,
+                            name: `index - ${feature}`,
+                        });
+                    } else {
+                        traces.push({
+                            x: data.x,
+                            y: data.y,
+                            type: selectedPlotTypeSection3,
+                            mode: selectedPlotTypeSection3 === 'scatter' ? 'lines+markers' : '',
+                            name: `index - ${feature}`,
+                            marker: { size: 10},
+                            line: { width: 3}
+                        });
+                    }
+                    return data.x;
+                })
+                .catch(error => {
+                    console.error('Error fetching feature data:', error);
                 });
-            } else if (activeTab === 'test') {
-                Plotly.newPlot(testGraph, traces, {
-                    title: 'Test Dataset',
-                    xaxis: {
-                        tickvals: xTicks,
-                        ticktext: xTickText,
-                    },
-                    yaxis: {},
+        });
+
+        Promise.all(promises).then((xValues) => {
+            if (xValues.length > 0) {
+                const xTicks = xValues[0].filter((_, i) => i % Math.ceil(xValues[0].length / 20) === 0);
+                const xTickText = xTicks.map(x => {
+                    const date = new Date(x);
+                    const hours = date.getHours()
+                    const minutes = date.getMinutes()
+                    const seconds = date.getSeconds()
+                    return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()} ${date.getFullYear()}, ${hours}:${minutes}:${seconds}`;
                 });
+
+                if (activeTabSection3 === 'train') {
+                    Plotly.newPlot(trainGraph, traces, {
+                        title: 'Train Dataset',
+                        xaxis: {
+                            tickvals: xTicks,
+                            ticktext: xTickText,
+                        },
+                        yaxis: {}
+                    });
+                } else if (activeTabSection3 === 'test') {
+                    Plotly.newPlot(testGraph, traces, {
+                        title: 'Test Dataset',
+                        xaxis: {
+                            tickvals: xTicks,
+                            ticktext: xTickText,
+                        },
+                        yaxis: {},
+                    });
+                }
+            } else {
+                if (activeTabSection3 === 'train') {
+                    Plotly.newPlot(trainGraph, [], { title: 'Train Dataset', xaxis: {}, yaxis: {} });
+                } else if (activeTabSection3 === 'test') {
+                    Plotly.newPlot(testGraph, [], { title: 'Test Dataset', xaxis: {}, yaxis: {} });
+                }
             }
-        } else {
-            if (activeTab === 'train') {
-                Plotly.newPlot(trainGraph, [], { title: 'Train Dataset', xaxis: {}, yaxis: {} });
-            } else if (activeTab === 'test') {
-                Plotly.newPlot(testGraph, [], { title: 'Test Dataset', xaxis: {}, yaxis: {} });
-            }
-        }
-    });
-}
+        });
+    }
 
-
-
-    const allCheckboxes = document.querySelectorAll('.s3_feature-checkbox');
+    const allCheckboxes = document.querySelectorAll('.s3_feature_checkbox');
     allCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function () {
-            saveSelections();
-            updateGraph();
+            saveSelectionsSection3();
+            updateGraphSection3();
         });
     });
 
-    trainTab.addEventListener('click', function () {
-        saveSelections();
-        activeTab = 'train';
+    trainTabSection3.addEventListener('click', function () {
+        saveSelectionsSection3();
+        activeTabSection3 = 'train';
         trainCheckboxes.style.display = 'block';
         testCheckboxes.style.display = 'none';
-        loadSelections(trainSelections);
+        loadSelectionsSection3(trainSelectionsSection3);
     });
 
-    testTab.addEventListener('click', function () {
-        saveSelections();
-        activeTab = 'test';
+    testTabSection3.addEventListener('click', function () {
+        saveSelectionsSection3();
+        activeTabSection3 = 'test';
         trainCheckboxes.style.display = 'none';
         testCheckboxes.style.display = 'block';
-        loadSelections(testSelections);
+        loadSelectionsSection3(testSelectionsSection3);
     });
 
     monthDropdown.addEventListener('click', function (event) {
         if (event.target.tagName === 'BUTTON') {
             selectedMonthButton.innerText = event.target.innerText;
-            selectedMonth = event.target.getAttribute('data-month');
-            updateGraph();
+            selectedMonthSection3 = event.target.getAttribute('data-month-section3');
+            updateGraphSection3();
         }
     });
 
     plotTypeDropdown.addEventListener('click', function (event) {
         if (event.target.tagName === 'BUTTON') {
             selectedPlotTypeButton.innerText = event.target.innerText;
-            selectedPlotType = event.target.getAttribute('data-plot-type');
-            updateGraph();
+            selectedPlotTypeSection3 = event.target.getAttribute('data-plot-type-section3');
+            updateGraphSection3();
         }
     });
 
-
-    loadSelections(trainSelections);
+    loadSelectionsSection3(trainSelectionsSection3);
 });
 
 
@@ -259,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function saveSelectionsSection4() {
-        const checkboxes = activeTabSection4 === 'train' ? trainCheckboxesSection4.querySelectorAll('.s4_feature-checkbox') : testCheckboxesSection4.querySelectorAll('.s4_feature-checkbox');
+        const checkboxes = activeTabSection4 === 'train' ? trainCheckboxesSection4.querySelectorAll('.s4_feature_checkbox') : testCheckboxesSection4.querySelectorAll('.s4_feature_checkbox');
         checkboxes.forEach(checkbox => {
             if (activeTabSection4 === 'train') {
                 trainSelectionsSection4[checkbox.value] = checkbox.checked;
@@ -270,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function loadSelectionsSection4(selections) {
-        const checkboxes = activeTabSection4 === 'train' ? trainCheckboxesSection4.querySelectorAll('.s4_feature-checkbox') : testCheckboxesSection4.querySelectorAll('.s4_feature-checkbox');
+        const checkboxes = activeTabSection4 === 'train' ? trainCheckboxesSection4.querySelectorAll('.s4_feature_checkbox') : testCheckboxesSection4.querySelectorAll('.s4_feature_checkbox');
         checkboxes.forEach(checkbox => {
             checkbox.checked = selections[checkbox.value] || false;
         });
@@ -278,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateGraphSection4() {
-        const checkboxes = activeTabSection4 === 'train' ? trainCheckboxesSection4.querySelectorAll('.s4_feature-checkbox') : testCheckboxesSection4.querySelectorAll('.s4_feature-checkbox');
+        const checkboxes = activeTabSection4 === 'train' ? trainCheckboxesSection4.querySelectorAll('.s4_feature_checkbox') : testCheckboxesSection4.querySelectorAll('.s4_feature_checkbox');
         const selectedFeatures = Array.from(checkboxes)
             .filter(checkbox => checkbox.checked)
             .map(checkbox => checkbox.value);
@@ -293,19 +288,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     return response.json();
                 })
                 .then(data => {
-                    console.log(`Data for feature: ${feature}`, data);
-
                     if (selectedPlotTypeSection4 === 'histogram') {
                         traces.push({
                             x: data.y_actual,
                             type: selectedPlotTypeSection4,
-                            name: `${feature} - Actual`,
+                            name: `index - ${feature} (Actual)`,
 
                         });
                         traces.push({
                             x: data.y_prediction,
                             type: selectedPlotTypeSection4,
-                            name: `${feature} - Prediction`,
+                            name: `index - ${feature} (Prediction)`,
 
                         });
                     } else {
@@ -375,8 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-
-    const allCheckboxesSection4 = document.querySelectorAll('.s4_feature-checkbox');
+    const allCheckboxesSection4 = document.querySelectorAll('.s4_feature_checkbox');
     allCheckboxesSection4.forEach(checkbox => {
         checkbox.addEventListener('change', function () {
             saveSelectionsSection4();
@@ -403,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function () {
     monthDropdownSection4.addEventListener('click', function (event) {
         if (event.target.tagName === 'BUTTON') {
             selectedMonthButtonSection4.innerText = event.target.innerText;
-            selectedMonthSection4 = event.target.getAttribute('data-month');
+            selectedMonthSection4 = event.target.getAttribute('data-month-section4');
             updateGraphSection4();
         }
     });
@@ -411,15 +403,13 @@ document.addEventListener('DOMContentLoaded', function () {
     plotTypeDropdownSection4.addEventListener('click', function (event) {
         if (event.target.tagName === 'BUTTON') {
             selectedPlotTypeButtonSection4.innerText = event.target.innerText;
-            selectedPlotTypeSection4 = event.target.getAttribute('data-plot-type');
+            selectedPlotTypeSection4 = event.target.getAttribute('data-plot-type-section4');
             updateGraphSection4();
         }
     });
 
-
     loadSelectionsSection4(trainSelectionsSection4);
 });
-
 
 
 

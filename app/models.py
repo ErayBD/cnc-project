@@ -146,7 +146,7 @@ def s1_create_graph_line(x_data, y_data, x_axis, y_axis):
     return graph_html
 
 
-def s1_create_graph_histogram(x_data, y_data, x_axis, y_axis):
+def s1_create_graph_histogram(y_data, y_axis):
     fig = go.Figure(
         data=[
             go.Histogram(
@@ -185,7 +185,8 @@ def s1_create_graph_histogram(x_data, y_data, x_axis, y_axis):
 
 # section 2, returns data in the db for 'anomaly' column is true
 def s2_fetch_anomaly_data(table_name):
-    query = text(f"SELECT * FROM {table_name} WHERE anomaly = True")
+    anomaly_column = 'anomaly'
+    query = text(f"SELECT * FROM {table_name} WHERE {anomaly_column} = True")
     with db.engine.connect() as connection:
         result = connection.execute(query)
         columns = [column for column in result.keys()]
@@ -211,9 +212,5 @@ def s3_fetch_feature_data(x_column, y_column, table_name, month=None):
         for row in result:
             x_data.append(row[0])
             y_data.append(row[1])
+        print(f"Fetched data: x_data length: {len(x_data)}, y_data length: {len(y_data)}")
         return x_data, y_data
-
-
-
-
-
