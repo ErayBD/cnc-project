@@ -1,5 +1,3 @@
-# CNC Project
-
 ## Getting Started
 
 ### Prerequisites
@@ -29,7 +27,7 @@
 * For the “Filename” section, point to the “db.sql” file found in the project files
 * Click on the “Restore” button
 
-### 3. Modify config.py
+#### 3. Modify config.py
 * Change the relevant part in the “config.py” according to your PostgreSQL setup <br>
 ```SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:username@localhost/database'```
 
