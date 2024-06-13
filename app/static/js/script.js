@@ -506,4 +506,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loadSelectionsSection4(trainSelectionsSection4);
 });
-
