@@ -29,17 +29,15 @@ def s1_fetch_axis_data(x_column, y_column, table_name):
 def s1_create_graph_scatter(x_data, y_data, x_axis, y_axis):
     fig = go.Figure(
         data=[
-            go.Scatter(
+            go.Scattergl(
                 x=x_data,
                 y=y_data,
-                mode='lines+markers',
+                mode='markers',
                 name=f"{x_axis} vs {y_axis}",
-                # marker=dict(
-                #     size=5,
-                #     color='blue',
-                #     line=dict(width=0.1, color='#3079c0')
-                # ),
-                line=dict(color='#3079c0')
+                marker=dict(
+                    size=5,
+                    color='rgb(31, 119, 180)'
+                ),
             ),
         ],
         layout=go.Layout(
@@ -64,7 +62,6 @@ def s1_create_graph_scatter(x_data, y_data, x_axis, y_axis):
             paper_bgcolor='rgba(0,0,0,0)',
         )
     )
-    # fig.update_layout(showlegend=True)
     graph_html = plot(fig, output_type='div', include_plotlyjs=True)
     return graph_html
 
@@ -77,8 +74,9 @@ def s1_create_graph_bar(x_data, y_data, x_axis, y_axis):
                 y=y_data,
                 name=f"{x_axis} vs {y_axis}",
                 marker=dict(
-                    color='blue',
-                    line=dict(width=1, color='#3079c0')
+                    line=dict(
+                        color='rgb(31, 119, 180)',
+                    )
                 )
             ),
         ],
@@ -104,7 +102,6 @@ def s1_create_graph_bar(x_data, y_data, x_axis, y_axis):
             paper_bgcolor='rgba(0,0,0,0)',
         )
     )
-    # fig.update_layout(showlegend=True)
     graph_html = plot(fig, output_type='div', include_plotlyjs=True)
     return graph_html
 
@@ -112,11 +109,19 @@ def s1_create_graph_bar(x_data, y_data, x_axis, y_axis):
 def s1_create_graph_line(x_data, y_data, x_axis, y_axis):
     fig = go.Figure(
         data=[
-            go.Line(
+            go.Scattergl(
                 x=x_data,
                 y=y_data,
+                mode='lines',
                 name=f"{x_axis} vs {y_axis}",
-                line=dict(color='#3079c0', width=3)
+                # marker=dict(
+                #     size=5,
+                #     color='rgb(31, 119, 180)'
+                # ),
+                line=dict(
+                    width=3,
+                    color='rgb(31, 119, 180)'
+                )
             ),
         ],
         layout=go.Layout(
@@ -141,7 +146,6 @@ def s1_create_graph_line(x_data, y_data, x_axis, y_axis):
             paper_bgcolor='rgba(0,0,0,0)',
         )
     )
-    # fig.update_layout(showlegend=True)
     graph_html = plot(fig, output_type='div', include_plotlyjs=True)
     return graph_html
 
@@ -153,9 +157,8 @@ def s1_create_graph_histogram(y_data, y_axis):
                 x=y_data,
                 name=f"Histogram: {y_axis} Histogram",
                 marker=dict(
-                    color='blue',
-                    line=dict(width=0.1, color='DarkSlateGrey')
-                )
+                    color='rgb(31, 119, 180)',
+                ),
             ),
         ],
         layout=go.Layout(
@@ -212,5 +215,4 @@ def s3_fetch_feature_data(x_column, y_column, table_name, month=None):
         for row in result:
             x_data.append(row[0])
             y_data.append(row[1])
-        print(f"Fetched data: x_data length: {len(x_data)}, y_data length: {len(y_data)}")
         return x_data, y_data

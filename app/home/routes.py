@@ -3,20 +3,20 @@ from app.models import s1_fetch_columns_data, s1_create_graph_scatter, s1_create
 import os
 import time
 
-
 main = Blueprint('home', __name__)
 
 # startup route
 @main.route("/", methods=['GET'])
 def home():
     s1_columns = s1_fetch_columns_data('all_table')
+
     s2_anomaly_columns, s2_table_data = s2_fetch_anomaly_data('anomaly_table')
     s3_columns_train = s1_fetch_columns_data('all_table_train')
     s3_columns_test = s1_fetch_columns_data('all_table_test')
     s4_columns_train = s1_fetch_columns_data('actual_table_train')
     s4_columns_test = s1_fetch_columns_data('actual_table_test')
     return render_template('home.html',
-                           title='Anomaly Graph',
+                           title='CNC Project',
                            s1_columns=s1_columns,
                            s2_anomaly_columns=s2_anomaly_columns,
                            s2_table_data=s2_table_data,
@@ -31,8 +31,8 @@ def home():
 def draw_graph():
     s1_columns = s1_fetch_columns_data('all_table')
     s1_data_selection = request.form.get('s1_data_selection', '')
-    s1_row_selection = request.form.get('s1_row_selection', '')
-    s1_column_selection = request.form.get('s1_column_selection', '')
+    s1_row_selection = int(request.form.get('s1_row_selection', session.get('s1_row_selection', 1)))
+    s1_column_selection = int(request.form.get('s1_column_selection', session.get('s1_column_selection', 1)))
     s1_x_axis = request.form.get('s1_x_axis', '')
     s1_y_axis = request.form.get('s1_y_axis', '')
     s1_plot_type = request.form.get('s1_plot_type', '')
@@ -40,16 +40,16 @@ def draw_graph():
     s2_anomaly_columns, s2_table_data = s2_fetch_anomaly_data('anomaly_table')
     s3_columns_test = s1_fetch_columns_data('all_table_test')
     s3_columns_train = s1_fetch_columns_data('all_table_train')
-    s4_columns_train = s1_fetch_columns_data('actual_table_train')
     s4_columns_test = s1_fetch_columns_data('actual_table_test')
+    s4_columns_train = s1_fetch_columns_data('actual_table_train')
 
     if s1_row_selection == "Seçim Yapınız" or s1_column_selection == "Seçim Yapınız":
         s1_error_message = "Lütfen satır ve sütun sayısını belirtiniz."
         return render_template('home.html',
-                               title='Anomaly Graph',
+                               title='CNC Project',
                                s1_data_selection=s1_data_selection,
-                               s1_row_selection=s1_row_selection,
-                               s1_column_selection=s1_column_selection,
+                               s1_row_selection=session['s1_row_selection'],
+                               s1_column_selection=session['s1_column_selection'],
                                s1_x_axis=s1_x_axis,
                                s1_y_axis=s1_y_axis,
                                s1_plot_type=s1_plot_type,
@@ -66,12 +66,12 @@ def draw_graph():
     if s1_x_axis == "Seçim Yapınız" or s1_y_axis == "Seçim Yapınız":
         s1_error_message = "Lütfen her iki ekseni de seçiniz."
         return render_template('home.html',
-                               title='Anomaly Graph',
+                               title='CNC Project',
                                s1_columns=s1_columns,
                                s1_error_message=s1_error_message,
                                s1_data_selection=s1_data_selection,
-                               s1_row_selection=s1_row_selection,
-                               s1_column_selection=s1_column_selection,
+                               s1_row_selection=session['s1_row_selection'],
+                               s1_column_selection=session['s1_column_selection'],
                                s1_x_axis=s1_x_axis,
                                s1_y_axis=s1_y_axis,
                                s1_plot_type=s1_plot_type,
@@ -86,10 +86,10 @@ def draw_graph():
     if s1_plot_type == "Seçim Yapınız":
         s1_error_message = "Lütfen bir çizim türü seçiniz."
         return render_template('home.html',
-                               title='Anomaly Graph',
+                               title='CNC Project',
                                s1_data_selection=s1_data_selection,
-                               s1_row_selection=s1_row_selection,
-                               s1_column_selection=s1_column_selection,
+                               s1_row_selection=session['s1_row_selection'],
+                               s1_column_selection=session['s1_column_selection'],
                                s1_x_axis=s1_x_axis,
                                s1_y_axis=s1_y_axis,
                                s1_plot_type=s1_plot_type,
@@ -103,16 +103,20 @@ def draw_graph():
                                s4_columns_train=s4_columns_train,
                                s4_columns_test=s4_columns_test)
 
-    max_graphs = int(s1_row_selection) * int(s1_column_selection)
+    if not s1_replace_graph:
+        session['s1_row_selection'] = s1_row_selection
+        session['s1_column_selection'] = s1_column_selection
+
+    max_graphs = session['s1_row_selection'] * session['s1_column_selection']
     graphs = session.get('s1_graphs', [])
 
-    if len(graphs) > max_graphs and not s1_replace_graph:
+    if len(graphs) >= max_graphs and not s1_replace_graph:
         s1_error_message = "Maksimum grafik kapasitesine ulaşıldı. Lütfen 'Sıfırla' butonunu kullanın."
         return render_template('home.html',
-                               title='Anomaly Graph',
+                               title='CNC Project',
                                s1_data_selection=s1_data_selection,
-                               s1_row_selection=s1_row_selection,
-                               s1_column_selection=s1_column_selection,
+                               s1_row_selection=session['s1_row_selection'],
+                               s1_column_selection=session['s1_column_selection'],
                                s1_x_axis=s1_x_axis,
                                s1_y_axis=s1_y_axis,
                                s1_plot_type=s1_plot_type,
@@ -138,12 +142,12 @@ def draw_graph():
         elif s1_plot_type == 'line':
             graph_html = s1_create_graph_line(x_data, y_data, s1_x_axis, s1_y_axis)
         elif s1_plot_type == 'histogram':
-            graph_html = s1_create_graph_histogram(x_data, y_data, s1_x_axis, s1_y_axis)
+            graph_html = s1_create_graph_histogram(y_data, s1_y_axis)
 
         graph_path = save_graph(graph_html)
 
         if s1_replace_graph:
-            num_columns = (int(s1_row_selection) * int(s1_column_selection)) // int(s1_column_selection)
+            num_columns = session['s1_column_selection']
             graph_index = (int(s1_row_selection) - 1) * num_columns + (int(s1_column_selection) - 1)
 
             if 0 <= graph_index < len(graphs):
@@ -152,10 +156,10 @@ def draw_graph():
             else:
                 s1_error_message = "Geçersiz grafik indeksi."
                 return render_template('home.html',
-                                       title='Anomaly Graph',
+                                       title='CNC Project',
                                        s1_data_selection=s1_data_selection,
-                                       s1_row_selection=s1_row_selection,
-                                       s1_column_selection=s1_column_selection,
+                                       s1_row_selection=session['s1_row_selection'],
+                                       s1_column_selection=session['s1_column_selection'],
                                        s1_x_axis=s1_x_axis,
                                        s1_y_axis=s1_y_axis,
                                        s1_plot_type=s1_plot_type,
@@ -175,10 +179,10 @@ def draw_graph():
             session['s1_graphs'] = graphs
 
         return render_template('home.html',
-                               title='Anomaly Graph',
+                               title='CNC Project',
                                s1_data_selection=s1_data_selection,
-                               s1_row_selection=s1_row_selection,
-                               s1_column_selection=s1_column_selection,
+                               s1_row_selection=session['s1_row_selection'],
+                               s1_column_selection=session['s1_column_selection'],
                                s1_x_axis=s1_x_axis,
                                s1_y_axis=s1_y_axis,
                                s1_plot_type=s1_plot_type,
@@ -189,17 +193,17 @@ def draw_graph():
                                s2_table_data=s2_table_data,
                                s3_columns_train=s3_columns_train,
                                s3_columns_test=s3_columns_test,
-                               s4_columns_train=s4_columns_train,
-                               s4_columns_test=s4_columns_test)
+                               s4_columns_train=s3_columns_train,
+                               s4_columns_test=s3_columns_test)
     else:
         s1_error_message = "Lütfen tüm gerekli alanları doldurunuz."
         return render_template('home.html',
-                               title='Anomaly Graph',
+                               title='CNC Project',
                                s1_columns=s1_columns,
                                s1_error_message=s1_error_message,
                                s1_data_selection=s1_data_selection,
-                               s1_row_selection=s1_row_selection,
-                               s1_column_selection=s1_column_selection,
+                               s1_row_selection=session['s1_row_selection'],
+                               s1_column_selection=session['s1_column_selection'],
                                s1_x_axis=s1_x_axis,
                                s1_y_axis=s1_y_axis,
                                s1_plot_type=s1_plot_type,
@@ -227,11 +231,13 @@ def save_graph(graph_html):
 # section 1, clears the 'graphs' list in session
 @main.route("/reset_graphs", methods=['POST'])
 def reset_graphs():
-    session['s1_graphs'] = []
+    session.pop('s1_graphs', None)
+    session.pop('s1_row_selection', None)
+    session.pop('s1_column_selection', None)
     return redirect(url_for('home.home'))
 
 
-# section 3, xxx
+# section 3, returns the data
 @main.route("/get_feature_data", methods=['GET'])
 def get_feature_data():
     feature = request.args.get('feature')
@@ -242,7 +248,7 @@ def get_feature_data():
     return jsonify({'x': x_data, 'y': y_data})
 
 
-# section 4, xxx
+# section 4, returns the data
 @main.route("/get_feature_data_section4", methods=['GET'])
 def get_feature_data_section4():
     feature = request.args.get('feature')
