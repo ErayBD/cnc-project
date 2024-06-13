@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
 // section 3
 document.addEventListener('DOMContentLoaded', function () {
     const trainGraph = document.getElementById('train-graph-section3');
@@ -116,45 +117,48 @@ document.addEventListener('DOMContentLoaded', function () {
                         trace = {
                             x: data.x,
                             y: data.y,
-                            type: 'scattergl',
-                            mode: 'markers',
-                            name: `${feature}`,
+                            type: 'scatter',
+                            mode: 'lines+markers',
+                            name: `index - ${feature}`,
                             marker: {
                                 size: 5,
-                                // color: 'rgb(31, 119, 180)'
+                                color: 'rgb(31, 119, 180)'
                             },
+                            line: {
+                                width: 3,
+                                color: 'rgb(255, 127, 14)'
+                            }
                         };
                     } else if (selectedPlotTypeSection3 === 'histogram') {
                         trace = {
                             x: data.y,
                             type: 'histogram',
-                            name: `${feature}`,
+                            name: `index - ${feature}`,
+                            marker: {
+                                size: 3,
+                                color: 'rgb(31, 119, 180)'
+                            },
                         };
                     } else if (selectedPlotTypeSection3 === 'bar') {
                         trace = {
                             x: data.x,
                             y: data.y,
                             type: 'bar',
-                            name: `${feature}`,
-                            line: {
-                                width: 3,
-                                // color: 'rgb(255, 127, 14)'
-                            },
+                            name: `index - ${feature}`,
+                            marker: {
+                                color: 'rgb(31, 119, 180)'
+                            }
                         };
                     } else if (selectedPlotTypeSection3 === 'line') {
                         trace = {
                             x: data.x,
                             y: data.y,
-                            type: 'scattergl',
+                            type: 'scatter',
                             mode: 'lines',
-                            name: `${feature}`,
-                            marker: {
-                                size: 5,
-                                // color: 'rgb(31, 119, 180)'
-                            },
+                            name: `index - ${feature}`,
                             line: {
                                 width: 3,
-                                // color: 'rgb(255, 127, 14)'
+                                color: 'rgb(31, 119, 180)'
                             }
                         };
                     }
@@ -177,36 +181,34 @@ document.addEventListener('DOMContentLoaded', function () {
                     return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()} ${date.getFullYear()}, ${hours}:${minutes}:${seconds}`;
                 });
 
-                const layout = {
-                    title: activeTabSection3 === 'train' ? 'Train Dataset' : 'Test Dataset',
-                    xaxis: selectedPlotTypeSection3 === 'histogram' ? {} : {
-                        tickvals: xTicks,
-                        ticktext: xTickText,
-                    },
-                    yaxis: {},
-                };
-
                 if (activeTabSection3 === 'train') {
-                    Plotly.newPlot(trainGraph, traces, layout);
+                    Plotly.newPlot(trainGraph, traces, {
+                        title: 'Train Dataset',
+                        xaxis: {
+                            tickvals: xTicks,
+                            ticktext: xTickText,
+                        },
+                        yaxis: {}
+                    });
                 } else if (activeTabSection3 === 'test') {
-                    Plotly.newPlot(testGraph, traces, layout);
+                    Plotly.newPlot(testGraph, traces, {
+                        title: 'Test Dataset',
+                        xaxis: {
+                            tickvals: xTicks,
+                            ticktext: xTickText,
+                        },
+                        yaxis: {},
+                    });
                 }
             } else {
-                const layout = {
-                    title: activeTabSection3 === 'train' ? 'Train Dataset' : 'Test Dataset',
-                    xaxis: {},
-                    yaxis: {},
-                };
-
                 if (activeTabSection3 === 'train') {
-                    Plotly.newPlot(trainGraph, [], layout);
+                    Plotly.newPlot(trainGraph, [], { title: 'Train Dataset', xaxis: {}, yaxis: {} });
                 } else if (activeTabSection3 === 'test') {
-                    Plotly.newPlot(testGraph, [], layout);
+                    Plotly.newPlot(testGraph, [], { title: 'Test Dataset', xaxis: {}, yaxis: {} });
                 }
             }
         });
     }
-
 
     const allCheckboxes = document.querySelectorAll('.s3_feature_checkbox');
     allCheckboxes.forEach(checkbox => {
@@ -250,7 +252,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loadSelectionsSection3(trainSelectionsSection3);
 });
-
 
 
 // section 4
@@ -321,98 +322,38 @@ document.addEventListener('DOMContentLoaded', function () {
                     return response.json();
                 })
                 .then(data => {
-                    let traceActual = {};
-                    let tracePrediction = {};
                     if (selectedPlotTypeSection4 === 'histogram') {
                         traces.push({
                             x: data.y_actual,
-                            type: 'histogram',
-                            name: `${feature} - Actual`,
+                            type: selectedPlotTypeSection4,
+                            name: `index - ${feature} (Actual)`,
+
                         });
                         traces.push({
                             x: data.y_prediction,
-                            type: 'histogram',
-                            name: `${feature} - Prediction`,
+                            type: selectedPlotTypeSection4,
+                            name: `index - ${feature} (Prediction)`,
+
                         });
                     } else {
-                        if (selectedPlotTypeSection4 === 'scatter') {
-                            traceActual = {
-                                x: data.x,
-                                y: data.y_actual,
-                                type: 'scattergl',
-                                mode: 'markers',
-                                name: `${feature} - Actual`,
-                                marker: {
-                                    size: 5,
-                                    // color: 'rgb(31, 119, 180)'
-                                },
-                            };
-                            tracePrediction = {
-                                x: data.x,
-                                y: data.y_prediction,
-                                type: 'scattergl',
-                                mode: 'markers',
-                                name: `${feature} - Prediction`,
-                                marker: {
-                                    size: 5,
-                                    // color: 'rgb(131,64,166)'
-                                },
-                            };
-                        } else if (selectedPlotTypeSection4 === 'bar') {
-                            traceActual = {
-                                x: data.x,
-                                y: data.y_actual,
-                                type: 'bar',
-                                name: `${feature} - Actual`,
-                                line: {
-                                    width: 3,
-                                    // color: 'rgb(255, 127, 14)'
-                                },
-                            };
-                            tracePrediction = {
-                                x: data.x,
-                                y: data.y_prediction,
-                                type: 'bar',
-                                name: `${feature} - Prediction`,
-                                line: {
-                                    width: 3,
-                                    // color: 'rgb(255, 127, 14)'
-                                },
-                            };
-                        } else if (selectedPlotTypeSection4 === 'line') {
-                            traceActual = {
-                                x: data.x,
-                                y: data.y_actual,
-                                type: 'scattergl',
-                                mode: 'lines',
-                                name: `${feature} - Actual`,
-                                marker: {
-                                    size: 5,
-                                    // color: 'rgb(31, 119, 180)'
-                                },
-                                line: {
-                                    width: 3,
-                                    // color: 'rgb(255, 127, 14)'
-                                }
-                            };
-                            tracePrediction = {
-                                x: data.x,
-                                y: data.y_prediction,
-                                type: 'scattergl',
-                                mode: 'lines',
-                                name: `${feature} - Prediction`,
-                                marker: {
-                                    size: 5,
-                                    // color: 'rgb(131,64,166)'
-                                },
-                                line: {
-                                    width: 3,
-                                    // color: 'rgb(255, 127, 14)'
-                                }
-                            };
-                        }
-                        traces.push(traceActual);
-                        traces.push(tracePrediction);
+                        traces.push({
+                            x: data.x,
+                            y: data.y_actual,
+                            type: selectedPlotTypeSection4,
+                            mode: selectedPlotTypeSection4 === 'scatter' ? 'lines+markers' : '',
+                            name: `${feature} - Actual`,
+                            marker: { size: 10},
+                            line: { width: 3}
+                        });
+                        traces.push({
+                            x: data.x,
+                            y: data.y_prediction,
+                            type: selectedPlotTypeSection4,
+                            mode: selectedPlotTypeSection4 === 'scatter' ? 'lines+markers' : '',
+                            name: `${feature} - Prediction`,
+                            marker: { size: 10},
+                            line: { width: 3}
+                        });
                     }
                     return data.x;
                 })
@@ -432,37 +373,34 @@ document.addEventListener('DOMContentLoaded', function () {
                     return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()} ${date.getFullYear()}, ${hours}:${minutes}:${seconds}`;
                 });
 
-                const layout = {
-                    title: activeTabSection4 === 'train' ? 'Train Dataset' : 'Test Dataset',
-                    xaxis: selectedPlotTypeSection4 === 'histogram' ? {} : {
-                        tickvals: xTicks,
-                        ticktext: xTickText,
-                    },
-                    yaxis: {},
-                };
-
                 if (activeTabSection4 === 'train') {
-                    Plotly.newPlot(trainGraphSection4, traces, layout);
+                    Plotly.newPlot(trainGraphSection4, traces, {
+                        title: 'Train Dataset',
+                        xaxis: {
+                            tickvals: xTicks,
+                            ticktext: xTickText,
+                        },
+                        yaxis: {}
+                    });
                 } else if (activeTabSection4 === 'test') {
-                    Plotly.newPlot(testGraphSection4, traces, layout);
+                    Plotly.newPlot(testGraphSection4, traces, {
+                        title: 'Test Dataset',
+                        xaxis: {
+                            tickvals: xTicks,
+                            ticktext: xTickText,
+                        },
+                        yaxis: {},
+                    });
                 }
             } else {
-                const layout = {
-                    title: activeTabSection4 === 'train' ? 'Train Dataset' : 'Test Dataset',
-                    xaxis: {},
-                    yaxis: {},
-                };
-
                 if (activeTabSection4 === 'train') {
-                    Plotly.newPlot(trainGraphSection4, [], layout);
+                    Plotly.newPlot(trainGraphSection4, [], { title: 'Train Dataset', xaxis: {}, yaxis: {} });
                 } else if (activeTabSection4 === 'test') {
-                    Plotly.newPlot(testGraphSection4, [], layout);
+                    Plotly.newPlot(testGraphSection4, [], { title: 'Test Dataset', xaxis: {}, yaxis: {} });
                 }
             }
         });
-
     }
-
 
     const allCheckboxesSection4 = document.querySelectorAll('.s4_feature_checkbox');
     allCheckboxesSection4.forEach(checkbox => {
@@ -506,4 +444,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loadSelectionsSection4(trainSelectionsSection4);
 });
+
+
+
+
 
