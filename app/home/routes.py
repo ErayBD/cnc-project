@@ -9,7 +9,6 @@ main = Blueprint('home', __name__)
 @main.route("/", methods=['GET'])
 def home():
     s1_columns = s1_fetch_columns_data('all_table')
-
     s2_anomaly_columns, s2_table_data = s2_fetch_anomaly_data('anomaly_table')
     s3_columns_train = s1_fetch_columns_data('all_table_train')
     s3_columns_test = s1_fetch_columns_data('all_table_test')
@@ -148,10 +147,10 @@ def draw_graph():
 
         if s1_replace_graph:
             num_columns = session['s1_column_selection']
-            graph_index = (int(s1_row_selection) - 1) * num_columns + (int(s1_column_selection) - 1)
+            graph_datatime = (int(s1_row_selection) - 1) * num_columns + (int(s1_column_selection) - 1)
 
-            if 0 <= graph_index < len(graphs):
-                graphs[graph_index] = graph_path
+            if 0 <= graph_datatime < len(graphs):
+                graphs[graph_datatime] = graph_path
                 session['s1_graphs'] = graphs
             else:
                 s1_error_message = "Geçersiz grafik indeksi."
@@ -243,8 +242,9 @@ def get_feature_data():
     feature = request.args.get('feature')
     tab = request.args.get('tab')
     month = request.args.get('month')
+
     table_name = 'all_table_train' if tab == "train" else 'all_table_test'
-    x_data, y_data = s3_fetch_feature_data('index', feature, table_name, month)
+    x_data, y_data = s3_fetch_feature_data('datatime', feature, table_name, month)
     return jsonify({'x': x_data, 'y': y_data})
 
 
@@ -254,8 +254,27 @@ def get_feature_data_section4():
     feature = request.args.get('feature')
     tab = request.args.get('tab')
     month = request.args.get('month')
-    actual_table_name = 'actual_table_train' if tab == "train" else 'actual_table_test'
-    prediction_table_name = 'prediction_table_train' if tab == "train" else 'prediction_table_test'
-    x_data, y_actual = s3_fetch_feature_data('index', feature, actual_table_name, month)
-    _, y_prediction = s3_fetch_feature_data('index', feature, prediction_table_name, month)
+    model = request.args.get('model', 'model_1')  # Model parametresini alıyoruz
+
+    # Model'e göre tablo adlarını belirliyoruz
+    if model == 'model_1':
+        # actual_table_name = 'actual_table_train_seq5' if tab == "train" else 'actual_table_test_seq5'
+        # prediction_table_name = 'prediction_table_train_seq5' if tab == "train" else 'prediction_table_test_seq5'
+        actual_table_name = 'actual_table_train' if tab == "train" else 'actual_table_test'
+        prediction_table_name = 'prediction_table_train' if tab == "train" else 'prediction_table_test'
+    elif model == 'model_2':
+        # actual_table_name = 'actual_table_train_seq60' if tab == "train" else 'actual_table_test_seq60'
+        # prediction_table_name = 'prediction_table_train_seq60' if tab == "train" else 'prediction_table_test_seq60'
+        actual_table_name = 'actual_table_train' if tab == "train" else 'actual_table_test_seq5'
+        prediction_table_name = 'prediction_table_train' if tab == "train" else 'prediction_table_test_seq5_128'
+    elif model == 'model_3':
+        # actual_table_name = 'actual_table_train_seq128' if tab == "train" else 'actual_table_test_seq128'
+        # prediction_table_name = 'prediction_table_train_seq128' if tab == "train" else 'prediction_table_test_seq128'
+        actual_table_name = 'actual_table_train' if tab == "train" else 'actual_table_test_seq60'
+        prediction_table_name = 'prediction_table_train' if tab == "train" else 'prediction_table_test_seq60_64'
+    else:
+        return jsonify({'error': 'Invalid model selected'}), 400
+
+    x_data, y_actual = s3_fetch_feature_data('datatime', feature, actual_table_name, month)
+    _, y_prediction = s3_fetch_feature_data('datatime', feature, prediction_table_name, month)
     return jsonify({'x': x_data, 'y_actual': y_actual, 'y_prediction': y_prediction})

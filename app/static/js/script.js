@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const monthDropdown = document.querySelector('.month-dropdown-menu-section3');
     const selectedMonthButton = document.getElementById('selected-month-button-section3');
     const plotTypeDropdown = document.querySelector('.plot-type-dropdown-menu-section3');
+    // const modelTypeDropdown = document.querySelector('.model-type-dropdown-menu-section3');
     const selectedPlotTypeButton = document.getElementById('selected-plot-type-button-section3');
     const trainCheckboxes = document.getElementById('train-checkboxes-section3');
     const testCheckboxes = document.getElementById('test-checkboxes-section3');
@@ -102,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .map(checkbox => checkbox.value);
 
         const traces = [];
+
         const promises = selectedFeatures.map((feature, index) => {
             return fetch(`/get_feature_data?feature=${feature}&tab=${activeTabSection3}&month=${selectedMonthSection3}`)
                 .then(response => {
@@ -124,13 +126,15 @@ document.addEventListener('DOMContentLoaded', function () {
                                 // color: 'rgb(31, 119, 180)'
                             },
                         };
-                    } else if (selectedPlotTypeSection3 === 'histogram') {
+                    }
+                    else if (selectedPlotTypeSection3 === 'histogram') {
                         trace = {
                             x: data.y,
                             type: 'histogram',
                             name: `${feature}`,
                         };
-                    } else if (selectedPlotTypeSection3 === 'bar') {
+                    }
+                    else if (selectedPlotTypeSection3 === 'bar') {
                         trace = {
                             x: data.x,
                             y: data.y,
@@ -141,7 +145,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                 // color: 'rgb(255, 127, 14)'
                             },
                         };
-                    } else if (selectedPlotTypeSection3 === 'line') {
+                    }
+                    else if (selectedPlotTypeSection3 === 'line') {
                         trace = {
                             x: data.x,
                             y: data.y,
@@ -243,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
     plotTypeDropdown.addEventListener('click', function (event) {
         if (event.target.tagName === 'BUTTON') {
             selectedPlotTypeButton.innerText = event.target.innerText;
-            selectedPlotTypeSection3 = event.target.getAttribute('data-plot-type-section3');
+            selectedPlotTypeSection3 = event.target.getAttribute('data-model-type-section4');
             updateGraphSection3();
         }
     });
@@ -263,6 +268,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectedPlotTypeButtonSection4 = document.getElementById('selected-plot-type-button-section4');
     const trainCheckboxesSection4 = document.getElementById('train-checkboxes-section4');
     const testCheckboxesSection4 = document.getElementById('test-checkboxes-section4');
+    const modelDropdownSection4 = document.querySelector('.model-dropdown-menu-section4');
+    const selectedModelButtonSection4 = document.getElementById('selected-model-button-section4');
 
     function initializeGraphSection4(element) {
         Plotly.newPlot(element, [], {
@@ -283,8 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let selectedMonthSection4 = 'all';
     let activeTabSection4 = 'train';
     let selectedPlotTypeSection4 = 'scatter';
-
-
+    let selectedModelSection4 = 'model_1';
 
     function saveSelectionsSection4() {
         const checkboxes = activeTabSection4 === 'train' ? trainCheckboxesSection4.querySelectorAll('.s4_feature_checkbox') : testCheckboxesSection4.querySelectorAll('.s4_feature_checkbox');
@@ -313,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const traces = [];
         const promises = selectedFeatures.map((feature, index) => {
-            return fetch(`/get_feature_data_section4?feature=${feature}&tab=${activeTabSection4}&month=${selectedMonthSection4}`)
+            return fetch(`/get_feature_data_section4?feature=${feature}&tab=${activeTabSection4}&month=${selectedMonthSection4}&model=${selectedModelSection4}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -470,6 +476,14 @@ document.addEventListener('DOMContentLoaded', function () {
             saveSelectionsSection4();
             updateGraphSection4();
         });
+    });
+
+    modelDropdownSection4.addEventListener('click', function (event) {
+        if (event.target.tagName === 'BUTTON') {
+            selectedModelButtonSection4.innerText = event.target.innerText;
+            selectedModelSection4 = event.target.getAttribute('data-model-type-section4');
+            updateGraphSection4();  // Grafik güncelleme fonksiyonunu çağırıyoruz
+        }
     });
 
     trainTabSection4.addEventListener('click', function () {
