@@ -42,4 +42,7 @@ npm-debug.log
 yarn-error.log
 app/static/data/
 flask_session/
+__pycache__/
+.idea/
+.venv/
 
