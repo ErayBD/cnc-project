@@ -59,5 +59,3 @@ Follow the steps below to set up and run the project on your local machine.
 
 ### 6. Project Screenshots
 ![all_new](https://github.com/user-attachments/assets/0964975b-ca5f-4a8e-a54a-678bbdf14a1a)
-
-
